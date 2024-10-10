@@ -16,23 +16,40 @@
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
+#include <SPI.h>
+#include <TFT_eSPI.h>
+
+TFT_eSPI    tft = TFT_eSPI();
 
 //=====wifi setup
-const char *ssid = "YOUR_WIFI_SSID"; // <---------------------- SET THIS !!!
-const char *password = "YOUR_WIFI_PASSWORD"; // <-------------- SET THIS !!!
+const char *ssid = "BDA Home 2"; // <---------------------- SET THIS !!!
+const char *password = "D@taflow99"; // <-------------- SET THIS !!!
 
 //=====Box Opener client setup
 const char *apiUrl = "https://api.erwin.lol/"; // mainnet
 //const char *apiUrl = "https://devnet-api.erwin.lol/"; // devnet
-const char *apiKey = "YOUR_API_KEY"; // <---------------------- SET THIS !!!
+const char *apiKey = "e05b6057f7706c64ffc1798c9ef4b75fca9f20ae489c07062597dc166a0b1cf854cd7144104727fb3ef1f1240e35d6ccb9b9fb257b189138189d0a7bb77d71285df2bce39dd6d6e45db72ab48f3971a468caac8d5c85900865c801199c6b375524b3dea6b41fe449b855cd3b571e9bc88f948da42d89e17790ca73b27effcef0"; // <---------------------- SET THIS !!!
 
 
 const int numGuesses = 50;
 String mnemonics[numGuesses]; // bip39 mnemonic table
 int sleepTime = 10000; // default sleep time in ms
+int dataS = 0; //succesful data count
+int dataF = 0; //failed data count
+int dataT = 0; //Timeout count
+
 
 void setup()
 {
+  tft.init();
+
+  tft.setRotation(1);
+
+  tft.fillScreen(TFT_BLACK);
+  
+  // Set "cursor" at top left corner of display (0,0) and select font 4
+  tft.setCursor(0, 0, 2);
+
   Serial.begin(115200);
 
   WiFi.mode(WIFI_STA);
@@ -84,7 +101,11 @@ bool submitGuesses(String *mnemonics, const String &apiUrl, const String &apiKey
   }
 
   Serial.printf("🔑️ Generated %u guesses\n", numGuesses);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.println("Generated guesses");
   Serial.printf("➡️ Submitting to oracle\n");
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.println("Submitting to oracle");
 
   String jsonString;
   serializeJson(jsonDoc, jsonString);
@@ -103,32 +124,57 @@ bool submitGuesses(String *mnemonics, const String &apiUrl, const String &apiKey
     if (httpResponseCode == 202)
     {
       Serial.println("✅ Guesses accepted");
+      tft.setTextColor(TFT_GREEN, TFT_BLACK);
+      tft.println("Guesses accepted");
+      dataS ++;
       ret = false;
     }
     else if (httpResponseCode == 404) // "Closed Box Not Found"
     {
       Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, response.c_str());
+      tft.setTextColor(TFT_RED, TFT_BLACK);
+      tft.println("Guesses rejected");
+      tft.println("Box Not Found");
+      dataF ++;
       ret = false;
     }
     else // other errors
     {
       Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, response.c_str());
+      tft.setTextColor(TFT_RED, TFT_BLACK);
+      tft.println("Guesses rejected");
+      tft.println(response.c_str());
+      dataF ++;
       ret = true;
     }
   }
   else // even more other errors :V maybe do a reconnect?
   {
     Serial.printf("❌ Error in HTTP request: %s\n", http.errorToString(httpResponseCode).c_str());
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+    tft.println("Read Timeout");
+    dataT ++;
     ret = true;
   }
 
   http.end();
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  tft.print(dataS);
+  tft.print("S  ");
+  tft.setTextColor(TFT_RED, TFT_BLACK);
+  tft.print(dataF);
+  tft.print("F  ");
+  tft.print(dataT);
+  tft.print("T");
   return ret;
 }
 
 //====== main loop ====
 void loop()
 {
+  
+  tft.fillScreen(TFT_BLACK);// Set "cursor" at top left corner of display (0,0) and select font 4
+  tft.setCursor(0, 0, 4);
   //--- reconnect wifi if it is not connected by some reason
   if (WiFi.status() != WL_CONNECTED)
   {
