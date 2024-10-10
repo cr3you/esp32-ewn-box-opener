@@ -53,11 +53,11 @@ platform = espressif32
 board = lilygo-t-display
 ``````
 For the newer s3 boards
-``````
+```
 [env:lilygo-t-display-s3]
 platform = espressif32
 board = lilygo-t-display-s3
-```
+``````
 In order to get the screen functions to work you will need to add the TFT_eSPI library to your project.
 
 You will also need to change the User_Setup_Select.h file to add support for the t-display
