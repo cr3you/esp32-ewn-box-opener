@@ -7,7 +7,7 @@ For easy import I suggest using VSCode with PlatformIO plugin.
 
 This projest uses ciband/bip39 library and esp32 hardware random number generator to create mnemonics.
 
-**>>I tested this code on T-Display-S3 board but it should run on others.<<**
+**>>I tested this code on T-Display board but it should run on others.<<**
 
 This is a work in progress. There are more features to be added (like GUI to set wifi credencials or the API key).
 But for now it should just work.
@@ -46,18 +46,30 @@ const char *apiUrl = "https://api.erwin.lol/"; // mainnet
 const char *apiKey = "YOUR_API_KEY"; // <---------------------- SET THIS !!!
 ```
 
-If you have different board then T-Display-S3 you should change it in platformio.ini file
+If you have different board then T-Display you should change it in platformio.ini file
 ```
-[env:lilygo-t-display-s3]
-platform = espressif32
-board = lilygo-t-display-s3
-```
-For the old T-Display boards:
-``````
 [env:lilygo-t-display]
 platform = espressif32
 board = lilygo-t-display
 ``````
+For the newer s3 boards
+``````
+[env:lilygo-t-display-s3]
+platform = espressif32
+board = lilygo-t-display-s3
+```
+In order to get the screen functions to work you will need to add the TFT_eSPI library to your project.
+
+You will also need to change the User_Setup_Select.h file to add support for the t-display
+comment out this line
+#include <User_Setup.h>           // Default setup is root library folder
+//#include <User_Setup.h>           // Default setup is root library folder
+
+and uncomment this line
+
+//#include <User_Setups/Setup25_TTGO_T_Display.h>    // Setup file for ESP32 and TTGO T-Display ST7789V SPI bus TFT
+#include <User_Setups/Setup25_TTGO_T_Display.h>    // Setup file for ESP32 and TTGO T-Display ST7789V SPI bus TFT
+
 Compile and upload to your board (click the right arrow button on bottom strip of the VSCode).
 
 ## Running.
