@@ -3,6 +3,8 @@ Esp32 port of the Box Opener client for mining EWN tokens.
 
 Original Box Opener client written in python: https://github.com/Erwin-Schrodinger-Token/ewn-box-opener
 
+Original esp32 port written by cr3you: https://github.com/cr3you/esp32-ewn-box-opener
+
 For easy import I suggest using VSCode with PlatformIO plugin.
 
 This projest uses ciband/bip39 library and esp32 hardware random number generator to create mnemonics.
