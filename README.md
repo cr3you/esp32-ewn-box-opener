@@ -7,7 +7,7 @@ For easy import I suggest using VSCode with PlatformIO plugin.
 
 This projest uses ciband/bip39 library and esp32 hardware random number generator to create mnemonics.
 
-**>>I tested this code on T-Display-S3 board but it should run on others.<<**
+I also used this code to read and write config file: https://github.com/mo-thunderz/Esp32ConfigFile/
 
 This is a work in progress. There are more features to be added (like GUI to set wifi credencials or the API key).
 But for now it should just work.
@@ -68,6 +68,25 @@ Mainnet - https://erwin.lol/box-opener
 
 Devnet - https://devnet.erwin.lol/box-opener
 
+![initial_setup](https://github.com/user-attachments/assets/64751288-44b2-45cb-8561-29d5ac0a9b16)
+
+You can read config by typing ```readconfig``` and pressing ENTER
+
+Set up your Wifi SSID and password and apikey by using commands (do not use space after the : character):
+
+```ssid:YOUR_WIFI_SSID```
+
+```pass:YOUR_WIFI_PASSWORD```
+
+```apikey:YOUR_APIKEY```
+
+Then you write your config by typing: ```writeconfig```
+
+You can delete the config file: ```delconfig```
+
+If you want to use devnet, type ```devnet``` if you want to go back to mainnet, type ```mainnet```
+
+Remember to write the config after change!
 
 ## Running.
 Open serial terminal with 115200 bps baudrate and connect to the esp32 board.
@@ -95,19 +114,8 @@ waiting 10s for next batch...
 waiting 10s for next batch...
 ```
 ## Problems.
-### 1. If the code does not run on your esp32 board.
 
-You see a repeating wall of text in serial terminal at the 115200 baudrate) try enabling the platform_packages in platformio.ini file
-```
-platform_packages = platformio/framework-arduinoespressif32@3.20008.0
-```
-This fix worked for T-Display-S3 board, it will probably not work for others. 
-
-I had a problem when compiling the code on different computer.
-It turned out that the code compiled with newer version of the framework caused guru meditation errors on the esp32 I have.
-So I had to force the framework version to a specific one which worked.
-
-### 2. If you have "Unknown board ID" error after changing board type in platformio.ini
+### 1. If you have "Unknown board ID" error after changing board type in platformio.ini
 Reset your boards by deleting the ".platformio/platforms" folder (on Windows it is located in user directory)
 
 More info there: https://www.luisllamas.es/en/plaftormio-unknown-board-id/
