@@ -27,38 +27,47 @@ Let PlatformIO do its thing, it can take a while if you import the project for t
 
 Alternatively you could just right click on your folder and choose "open with Code"...
 
-## Setting up.
+## Setting up to yur board.
+
+If you have different ESP32 board than T-Display-S3 you should change it in platformio.ini file
+```
+[env:esp32-ewn-box-opener]
+platform = espressif32
+board = lilygo-t-display-s3    <--- change this
+```
+For the old T-Display boards:
+```
+board = lilygo-t-display
+```
+For the ESP32-S3-DevKitC-1-N8R2 and -N16R8 boards:
+```
+board = esp32-s3-devkitc-1
+```
+If you have other board, search it under this link and find the board type:
+
+https://docs.platformio.org/en/latest/boards/index.html#espressif-32
+
+## Biuld and Upload to your board
+First build the code to check if everything is set up OK
+
+![obraz](https://github.com/user-attachments/assets/a6d4fdbc-679f-4a85-9565-03a5c5afb5b4)
+
+If you see SUCCESS on your output window then you are ready to upload the firmware.
+
+![obraz](https://github.com/user-attachments/assets/2886cdfe-3fb5-4129-8aeb-1d500722a7e9)
+
+Now upload the code to your board
+
+![obraz](https://github.com/user-attachments/assets/d2f83300-1e47-4519-a5bf-0bffa26170a2)
+
+And now you are ready to set up your box-opener :)
+## Setting up the wifi and APIkey
 Get your API key from:
 
 Mainnet - https://erwin.lol/box-opener
 
 Devnet - https://devnet.erwin.lol/box-opener
 
-Set up your wifi credentials (ssid and password) and yout API key in main.cpp file (in the "src" directory).
-```
-//=====wifi setup
-const char *ssid = "YOUR_WIFI_SSID"; // <---------------------- SET THIS !!!
-const char *password = "YOUR_WIFI_PASSWORD"; // <-------------- SET THIS !!!
-
-//=====Box Opener client setup
-const char *apiUrl = "https://api.erwin.lol/"; // mainnet
-//const char *apiUrl = "https://devnet-api.erwin.lol/"; // devnet
-const char *apiKey = "YOUR_API_KEY"; // <---------------------- SET THIS !!!
-```
-
-If you have different board then T-Display-S3 you should change it in platformio.ini file
-```
-[env:lilygo-t-display-s3]
-platform = espressif32
-board = lilygo-t-display-s3
-```
-For the old T-Display boards:
-``````
-[env:lilygo-t-display]
-platform = espressif32
-board = lilygo-t-display
-``````
-Compile and upload to your board (click the right arrow button on bottom strip of the VSCode).
 
 ## Running.
 Open serial terminal with 115200 bps baudrate and connect to the esp32 board.
