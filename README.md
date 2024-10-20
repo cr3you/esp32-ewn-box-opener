@@ -43,6 +43,11 @@ For the ESP32-S3-DevKitC-1-N8R2 and -N16R8 boards:
 ```
 board = esp32-s3-devkitc-1
 ```
+If you have errors for N8R2 boards, try adding this line above the build_flags section:
+```
+build_unflags = -DBOARD_HAS_PSRAM
+```
+
 If you have other board, search it under this link and find the board type:
 
 https://docs.platformio.org/en/latest/boards/index.html#espressif-32
