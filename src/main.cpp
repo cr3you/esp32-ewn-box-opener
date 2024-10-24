@@ -4,12 +4,12 @@
  * Description: Esp32 port of the Box Opener client for mining EWN tokens.
  * Author: Crey
  * Repository: https://github.com/cr3you/esp32-ewn-box-opener/
- * Date: 2024.10.15 
- * Version: 1.1.0
+ * Date: 2024.10.24 
+ * Version: 1.1.1
  * License: MIT
  * ------------------------------------------------------------------------
  */
-
+#define VERSION "1.1.1"
 //#define USE_HARDCODED_CREDENTIALS // if for some reson LittleFS/SPIFFS does not work
 
 #include "bip39/bip39.h"
@@ -149,6 +149,7 @@ bool saveConfig() {
 //---------------- s e r i a l   s e t u p --------------------------
 void printConfig(bool print_whole_apikey){
   Serial.print("\n-------- c o n f i g --------\n");
+  Serial.printf("version: %s\n",VERSION);
   Serial.printf("box-opener configured: %s\n",config_set?"true":"false");
   Serial.printf("oracle server: %s\n",devnet?"devnet":"mainnet");
   Serial.printf("ssid: %s\npass: %s\n", ssid.c_str(), password.c_str());
@@ -304,29 +305,46 @@ bool submitGuesses(String *mnemonics, const String &apiUrl, const String &apiKey
 
   int httpResponseCode = http.POST(jsonString);
 
+
   if (httpResponseCode > 0)
   {
     String response = http.getString();
-    if (httpResponseCode == 202)
+    String t = response.substring(0,30);
+    switch (httpResponseCode)
     {
-      Serial.println("✅ Guesses accepted");
-      ret = false;
-    }
-    else if (httpResponseCode == 404) // "Closed Box Not Found"
-    {
-      Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, response.c_str());
-      ret = false;
-    }
-    else // other errors
-    {
-      Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, response.c_str());
-
-      if (httpResponseCode == 401) {// "Box Opener Not Charged!"
-        Serial.printf("\n! CHARGE ME !\n\n");
-      }
-
-      ret = true;
-    }
+      case 202:
+        Serial.println("✅ Guesses accepted");
+        ret = false;
+        break;
+      case 401: //several errors "Invalid API Key", "Box Opener Not Charged!"...
+        Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, response.c_str());
+        if (t.startsWith("Box Opener Not Charged")) {// "Box Opener Not Charged!"
+            Serial.printf("\n! CHARGE ME !\n\n");
+        }
+        ret = false;
+        break;
+      case 404: // "Closed Box Not Found"
+        Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, response.c_str());
+        ret = false;
+        break;
+      case 500: // "Internal Server Error"
+        Serial.printf("❌ Guesses rejected (%d): Internal Server Error\n", httpResponseCode);
+        ret = false;
+        break;
+      case 502: // "Bad Gateway"
+        Serial.printf("❌ Guesses rejected (%d): Bad Gateway\n", httpResponseCode);
+        ret = false;
+        break;
+      case 530: // "Argo Tunnel Error"
+        Serial.printf("❌ Guesses rejected (%d): Argo Tunnel Error\n", httpResponseCode);
+        ret = false;
+        break;
+      default: // other errors
+        //Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, t.c_str()); // show first 30 chars of response
+        Serial.printf("❌ Guesses rejected (%d): Unspecified Error\n", httpResponseCode);
+        ret = true;
+        break;
+    } // switch end
   }
   else // even more other errors :V maybe do a reconnect?
   {
@@ -448,7 +466,7 @@ void loop()
   }
 
   if ((box_opener_sleeping == false) && (config_set)){
-    //--- reconnect wifi if it is not connected by some reason
+    //--- reconnect wifi if it is not connected for some reason
     if (WiFi.status() != WL_CONNECTED)
     {
       Serial.print("WiFi disconnected, trying to reconnect..\n");
