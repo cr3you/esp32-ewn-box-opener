@@ -13,6 +13,8 @@ This is a work in progress. There are more features to be added (like GUI to set
 But for now it should just work.
 
 # tl;dr if you have T-Display-S3 board
+https://github.com/user-attachments/assets/d2d30b63-174e-40fe-8696-ee304904ff61
+
 You can just flash compiled bin file from here: [creys_box_opener_t_disp_s3_v1_2_0.bin](firmware/creys_box_opener_t_disp_s3_v1_2_0.bin) (right click and Save as..)
 
 And use any esp32 flashing tool to upload it to your board at address 0x0
