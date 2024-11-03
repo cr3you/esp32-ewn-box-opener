@@ -84,6 +84,15 @@ Mainnet - https://erwin.lol/box-opener
 
 Devnet - https://devnet.erwin.lol/box-opener
 
+If you flashed the firmware from VSCode then serial terminal should open and you should be able to config your board right away.
+
+If you flashed the bin file then you need some serial terminal software (there are many out there).
+Or you can use online version (in Chrome, Opera or other chromium based browser):
+
+https://www.serialterminal.com
+
+Open serial terminal with 115200 baudrate.
+
 ![initial_setup](https://github.com/user-attachments/assets/64751288-44b2-45cb-8561-29d5ac0a9b16)
 
 You can read config by typing ```readconfig``` and pressing ENTER
