@@ -12,6 +12,15 @@ I also used this code to read and write config file: https://github.com/mo-thund
 This is a work in progress. There are more features to be added (like GUI to set wifi credencials or the API key).
 But for now it should just work.
 
+# tl;dr if you have T-Display-S3 board
+You can just flash compiled bin file from here: [creys_box_opener_t_disp_s3_v1_2_0.bin](firmware/creys_box_opener_t_disp_s3_v1_2_0.bin) (right click and Save as..)
+
+And use any esp32 flashing tool to upload it to your board at address 0x0
+
+Example tool (open in chromium based browser like Chrome, Opera..) https://espressif.github.io/esptool-js/
+
+After flashing set up your board using this guide: [Setting up the wifi and APIkey](README.md#setting-up-the-wifi-and-apikey)
+
 ## Importing project.
 **The easiest way to import is to have VSCode (Visual Studio Code editor) installed with PlatformIO extension on your computer.**
 
