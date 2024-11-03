@@ -19,7 +19,7 @@ You can just flash compiled bin file from here: [creys_box_opener_t_disp_s3_v1_2
 
 And use any esp32 flashing tool to upload it to your board at address 0x0
 
-Example tool (open in chromium based browser like Chrome, Opera..) https://espressif.github.io/esptool-js/
+Example online flashing tool (open in chromium based browser like Chrome, Opera..) https://espressif.github.io/esptool-js/
 
 After flashing set up your board using this guide: [Setting up the wifi and APIkey](README.md#setting-up-the-wifi-and-apikey)
 
