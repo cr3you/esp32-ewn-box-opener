@@ -21,7 +21,7 @@ And use any esp32 flashing tool to upload it to your board at address 0x0
 
 Example online flashing tool (open in chromium based browser like Chrome, Opera..) https://espressif.github.io/esptool-js/
 
-After flashing set up your board using this guide: [Setting up the wifi and APIkey](README.md#setting-up-the-wifi-and-apikey)
+After flashing set up your board using this website: https://cr3you.github.io/esp32-ewn-box-opener/
 
 ## Importing project.
 **The easiest way to import is to have VSCode (Visual Studio Code editor) installed with PlatformIO extension on your computer.**
@@ -83,6 +83,12 @@ Get your API key from:
 Mainnet - https://erwin.lol/box-opener
 
 Devnet - https://devnet.erwin.lol/box-opener
+
+I created simple website to set up the board via serial port. I suggest using it:
+### https://cr3you.github.io/esp32-ewn-box-opener/
+
+
+**If you don't want to use it you can use the old setup instructions below.**
 
 If you flashed the firmware from VSCode then serial terminal should open and you should be able to config your board right away.
 
