@@ -4,12 +4,12 @@
  * Description: Esp32 port of the Box Opener client for mining EWN tokens.
  * Author: Crey
  * Repository: https://github.com/cr3you/esp32-ewn-box-opener/
- * Date: 2025.04.10 
- * Version: 1.2.1
+ * Date: 2025.04.21 
+ * Version: 1.2.2
  * License: MIT
  * ------------------------------------------------------------------------
  */
-#define VERSION "1.2.1"
+#define VERSION "1.2.2"
 //#define USE_HARDCODED_CREDENTIALS // if for some reson LittleFS/SPIFFS does not work
 
 #include "bip39/bip39.h"
@@ -696,6 +696,9 @@ bool submitGuesses(String *mnemonics, const String &apiUrl, const String &apiKey
     String response = http.getString();
     //String t = response.substring(0,30);
     String t = response.substring(0,60);
+    String msg = "";
+    int messageStart = 0;
+    int messageEnd = 0;
 
     switch (httpResponseCode)
     {
@@ -709,20 +712,53 @@ bool submitGuesses(String *mnemonics, const String &apiUrl, const String &apiKey
         ret = false;
         break;
       case 401: //several errors "Invalid API Key", "Box Opener Not Charged!"...
+        // in api v2 the response is in JSON string format
+        //{"description":"Unauthorized","status":401,"message":"Box Opener Not Charged!"}
+        //{"description":"Unauthorized","status":401,"message":"Invalid API Key"}
+
         Serial.printf("❌ Guesses rejected (%d): %s\n", httpResponseCode, response.c_str());
-        snprintf(log_ch,sizeof(log_ch),"[X] Rejected (%d): %s", httpResponseCode, response.c_str());
-        if (t.startsWith("Box Opener Not Charged")) {// "Box Opener Not Charged!"
-            Serial.printf("\n! CHARGE ME !\n\n");
+
+        //.. so we find the "message" field
+        messageStart = response.indexOf("\"message\":\"");
+        if (messageStart != -1) {
+          messageStart += 11; // skip the "message":"
+          messageEnd = response.indexOf("\"", messageStart); // find message end
+          if (messageEnd != -1) {
+            msg = response.substring(messageStart, messageEnd);
+            snprintf(log_ch,sizeof(log_ch),"[X] Rejected (%d): %s", httpResponseCode, msg.c_str());
+            if (msg.startsWith("Box Opener Not Charged")) {// "Box Opener Not Charged!"
+                Serial.printf("\n! CHARGE ME !\n\n");
+                #ifdef T_DISPLAY_S3
+                  setStatus(ST_CHARGE);
+                #endif
+            }
             #ifdef T_DISPLAY_S3
-              setStatus(ST_CHARGE);
-            #endif
-        }
-        #ifdef T_DISPLAY_S3
+            else {
+                setStatus(ST_REJECTED);
+            }
+            calcRatio(0);
+            #endif            
+          }else{  // error in string
+            #ifdef T_DISPLAY_S3
+            setStatus(ST_REJECTED);
+            calcRatio(0);
+            #endif            
+          }
+        }else{ // not a JSON string (at least not containing "message" field)
+          snprintf(log_ch,sizeof(log_ch),"[X] Rejected (%d): %s", httpResponseCode, response.c_str());
+          if (t.startsWith("Box Opener Not Charged")) {// "Box Opener Not Charged!"
+              Serial.printf("\n! CHARGE ME !\n\n");
+              #ifdef T_DISPLAY_S3
+                setStatus(ST_CHARGE);
+              #endif
+          }
+          #ifdef T_DISPLAY_S3
           else {
               setStatus(ST_REJECTED);
           }
-        calcRatio(0);
-        #endif
+          calcRatio(0);
+          #endif
+        }
         ret = false;
         break;
       case 404: // "Closed Box Not Found"
