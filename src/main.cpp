@@ -4,12 +4,12 @@
  * Description: Esp32 port of the Box Opener client for mining EWN tokens.
  * Author: Crey
  * Repository: https://github.com/cr3you/esp32-ewn-box-opener/
- * Date: 2024.11.03 
- * Version: 1.2.0
+ * Date: 2025.04.10 
+ * Version: 1.2.1
  * License: MIT
  * ------------------------------------------------------------------------
  */
-#define VERSION "1.2.0"
+#define VERSION "1.2.1"
 //#define USE_HARDCODED_CREDENTIALS // if for some reson LittleFS/SPIFFS does not work
 
 #include "bip39/bip39.h"
@@ -54,8 +54,8 @@ String apiKey = "YOUR_API_KEY"; // <---------------------- SET THIS !!!
 bool devnet = false; // if 'true' use devnet, if 'false' use mainnet
 
 
-const char *apiUrlMainnet = "https://api.erwin.lol/"; // mainnet
-const char *apiUrlDevnet = "https://devnet-api.erwin.lol/"; // devnet
+const char *apiUrlMainnet = "https://api.erwin.lol"; // mainnet
+const char *apiUrlDevnet = "https://devnet-api.erwin.lol"; // devnet
 
 #define FORMAT_LITTLEFS_IF_FAILED true
 const String config_filename = "/ewnconfig.json";
@@ -63,7 +63,7 @@ bool config_set = false;
 
 const int numGuesses = 50;
 String mnemonics[numGuesses]; // bip39 mnemonic table
-int sleepTime = 10000; // default sleep time in ms
+int sleepTime = 30000; // default sleep time in ms
 
 unsigned long t1=0;
 unsigned long t2=0;
@@ -1086,9 +1086,9 @@ void loop()
     {
       sleepTime = 10000;
     }
-    if (sleepTime > 60000) // if sleep for more than a minute limit it to one minute
+    if (sleepTime > 65000) // if sleep for more than a minute limit it to one minute
     {
-      sleepTime = 60000;
+      sleepTime = 65000;
     }
 
     Serial.printf("waiting %is for next batch...\n", sleepTime/1000);
