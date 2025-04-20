@@ -17,9 +17,9 @@ https://github.com/user-attachments/assets/d2d30b63-174e-40fe-8696-ee304904ff61
 
 You can just flash compiled bin file from here:
 
-- for T-Display-S3 [creys_box_opener_t_disp_s3_v1_2_1.bin](https://github.com/cr3you/esp32-ewn-box-opener/releases/download/1.2.1/creys_box_opener_t_disp_s3_v1_2_1.bin) (right click and Save as..)
+- for T-Display-S3 [creys_box_opener_t_disp_s3_v1_2_2.bin](https://github.com/cr3you/esp32-ewn-box-opener/releases/download/1.2.2/creys_box_opener_t_disp_s3_v1_2_2.bin) (right click and Save as..)
 
-- for ideaspark (with 320x170 TFT) [creys_box_opener_ideaspark_v1_2_1.bin](https://github.com/cr3you/esp32-ewn-box-opener/releases/download/1.2.1/creys_box_opener_ideaspark_v1_2_1.bin) (right click and Save as..)
+- for ideaspark (with 320x170 TFT) [creys_box_opener_ideaspark_v1_2_2.bin](https://github.com/cr3you/esp32-ewn-box-opener/releases/download/1.2.2/creys_box_opener_ideaspark_v1_2_2.bin) (right click and Save as..)
 
 And use any esp32 flashing tool to upload it to your board at address 0x0
 
